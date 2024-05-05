@@ -16,9 +16,10 @@ provider "aws" {
 {%- for i in servers %}
   {%- if not i.disabled %}
 
-resource "aws_instance" "{{ i.server_name | lower}}" {
-  ami           = "{{ i.ami | comment}}"
-  instance_type = "t2.micro"
+resource "aws_instance" "{{ i.server_name | to_resource }}" {
+  ami           = "{{ i.ami }}"
+  instance_type = "{{ i.instance_type }}"
+  availability_zone = "{{ i.availability_zone }}"
 
   tags = {
     Name = "{{ i.server_name | capitalize}}"

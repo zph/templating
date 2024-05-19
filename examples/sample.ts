@@ -1,4 +1,4 @@
-import { Templating } from "../mod.ts"
+import Templating, {kebabCase} from "../mod.ts"
 
 enum InstanceType {
   t3_micro = 't3.micro',
@@ -86,7 +86,7 @@ const server_names: { [key: string]: Partial<TServer> } = {
 };
 
 const main = () => {
-  const template = Templating('.')
+  const template = new Templating('.')
   const args: {servers: TServer[]} = {
     servers: Object.entries(server_names).map(([name, opts]) => Server(name, opts)),
   }

@@ -1,25 +1,4 @@
-import * as template from 'npm:nunjucks';
-import { snakeCase, kebabCase } from 'npm:change-case';
-
-// TODO: make sure throw works, it's not currently
-// there are many issues in repo about this :-/
-// Because it's unreliable we'll trust typescript typing instead
-const env = template.configure('.', {throwOnUndefined: true})
-
-env.addFilter('to_resource', function (str: string) {
-  if(!str) throw new Error('to_resource: str is empty');
-  return snakeCase(str.toLowerCase());
-});
-
-env.addFilter('kebab_case', function (str: string) {
-  if(!str) throw new Error('kebab_case: str is empty');
-  return kebabCase(str.toLowerCase());
-});
-
-// deno-lint-ignore no-explicit-any
-function render(tmpl: string, args: {[key: string]: any}) {
-  return env.render(tmpl, args)
-}
+import { Templating } from "../mod.ts"
 
 enum InstanceType {
   t3_micro = 't3.micro',
@@ -107,11 +86,13 @@ const server_names: { [key: string]: Partial<TServer> } = {
 };
 
 const main = () => {
+  const template = Templating('.')
   const args: {servers: TServer[]} = {
     servers: Object.entries(server_names).map(([name, opts]) => Server(name, opts)),
   }
-  const hcl = render('sample.tf', args)
+  const hcl = template.render('sample.tf', args)
   console.log(hcl)
 }
 
 main()
+
